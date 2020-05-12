@@ -1,0 +1,17 @@
+GET http://localhost:8080/tickets
+
+GET http://localhost:8080/tickets?id=hgfchfc&id=dfghjdg&status=resolved
+
+GET http://localhost:8080/tickets?id=hgfchfc
+
+GET http://localhost:8080/tickets?id=hgfchfc&id=dfghjdg&status=resolved&projection=title&projection=id&projection=description
+
+POST http://localhost:8080/tickets?
+
+
+
+{"command":"list"}
+
+GET http://localhost:8080/tickets
+
+{"command":"list", }
