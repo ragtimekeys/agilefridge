@@ -1,17 +1,8 @@
-GET http://localhost:8080/tickets
-
-GET http://localhost:8080/tickets?id=hgfchfc&id=dfghjdg&status=resolved
-
-GET http://localhost:8080/tickets?id=hgfchfc
-
-GET http://localhost:8080/tickets?id=hgfchfc&id=dfghjdg&status=resolved&projection=title&projection=id&projection=description
-
-POST http://localhost:8080/tickets?
-
-
-
-{"command":"list"}
-
-GET http://localhost:8080/tickets
-
-{"command":"list", }
+### no arguments
+GET http://localhost:8080/issues
+### multiple ids
+GET http://localhost:8080/issues?id=hgfchfc&id=dfghjdg&status=resolved
+### one id
+GET http://localhost:8080/issues?id=hgfchfc
+### lots of things
+GET http://localhost:8080/issues?id=hgfchfc&id=dfghjdg&status=resolved&projection=title&projection=id&projection=description

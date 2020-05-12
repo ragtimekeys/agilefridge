@@ -66,13 +66,21 @@ type (
 
 		DisplayName string `json:"displayName"`
 		GitHubId    string `json:"gitHubId"`
-		GoogleId    string `json:"googleId"`
 	}
 )
 
 func main() {
+	go func() {
+		time.Sleep(3 * time.Second)
+		log.Println("cj")
+	}()
+
 	serverHandler := func(w http.ResponseWriter, req *http.Request) {
-		_, _ = io.WriteString(w, "Pwease handew ouw issue\n")
+		w.Header().Add("meheheheheh", "goohehehe")
+		w.WriteHeader(404)
+		for _, id := range req.URL.Query()["id"] {
+			_, _ = io.WriteString(w, id)
+		}
 	}
 
 	http.HandleFunc("/issues", serverHandler)
