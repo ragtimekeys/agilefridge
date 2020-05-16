@@ -1,0 +1,124 @@
+openapi: 3.0.0
+info:
+  title: Agile Fridge RESTful API
+paths:
+  /issues:
+    get:
+      summary: Optionally looks for issues that comply with the filters applied
+      parameters:
+        - in: query
+          name: search
+          schema:
+            type: string
+        - in: query
+          name: id
+          schema:
+            type: string
+        - in: query
+          name: type
+          schema:
+            type: string
+        - in: query
+          name: createTime
+          schema:
+            type: string
+        - in: query
+          name: updateTime
+          schema:
+            type: string
+        - in: query
+          name: projectId
+          schema:
+            type: string
+        - in: query
+          name: owner
+          schema:
+            type: string
+        - in: query
+          name: creator
+          schema:
+            type: string
+        - in: query
+          name: assignee
+          schema:
+            type: string
+        - in: query
+          name: requestor
+          schema:
+            type: string
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Issue'
+        400:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    # resources
+    Issue:
+      type: object
+      properties:
+        allOf:
+          - $ref: '#/components/schemas/IdentifyingData'
+          - $ref: '#/components/schemas/MutationTimestamps'
+          - type: object
+            properties:
+              projectId:
+                type: string
+          - $ref: '#/components/schemas/DescriptiveMetadata'
+          - $ref: '#/components/schemas/OwnershipMetadata'
+    # shared properties
+    IdentifyingData:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+    MutationTimestamps:
+      type: object
+      properties:
+        createTime:
+          type: string
+        updateTime:
+          type: string
+        deleteTime:
+          type: string
+    DescriptiveMetadata:
+      type: object
+      properties:
+        title:
+          type: string
+        body:
+          type: string
+    OwnershipMetadata:
+      type: object
+      properties:
+        owner:
+          type: string
+        creator:
+          type: string
+        assignee:
+          type: string
+        requestor:
+          type: string
+    # errors
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string

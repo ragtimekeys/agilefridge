@@ -15,8 +15,8 @@ const (
 
 type (
 	IdentifyingData struct {
-		Id    string `json:"id"`
-		Class string `json:"type"`
+		Id   string `json:"id"`
+		Type string `json:"type"`
 	}
 	MutationTimestamps struct {
 		CreateTime time.Time `json:"createTime"`
@@ -38,7 +38,6 @@ type (
 		MutationTimestamps
 
 		ProjectId string `json:"projectId"`
-		Type      string `json:"type"`
 
 		DescriptiveMetadata
 		OwnershipMetadata
