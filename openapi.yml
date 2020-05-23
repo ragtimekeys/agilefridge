@@ -10,10 +10,7 @@ paths:
           name: search
           schema:
             type: string
-        - in: query
-          name: id
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Id'
         - in: query
           name: type
           schema:
@@ -64,21 +61,104 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+    post:
+      summary: Creates an issue
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IssueCreate'
+      responses:
+        204:
+          description: The issue was created
+        400:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      summary: Updates an issue
+      parameters:
+        - $ref: '#/components/parameters/RequiredId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IssueUpdate'
+      responses:
+        204:
+          description: The issue was updated
+        400:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Deletes an issue
+      parameters:
+        - $ref: '#/components/parameters/RequiredId'
+      responses:
+        204:
+          description: The issue was deleted
+        400:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
+  parameters:
+    Id:
+      in: query
+      name: id
+      required: false
+      schema:
+        type: string
+    RequiredId:
+      in: query
+      name: id
+      required: true
+      schema:
+        type: string
   schemas:
     # resources
-    Issue:
+    ProjectChild:
       type: object
-      properties:
-        allOf:
-          - $ref: '#/components/schemas/IdentifyingData'
-          - $ref: '#/components/schemas/MutationTimestamps'
-          - type: object
-            properties:
-              projectId:
-                type: string
-          - $ref: '#/components/schemas/DescriptiveMetadata'
-          - $ref: '#/components/schemas/OwnershipMetadata'
+        properties:
+          projectId:
+            type: string
+    IssueCreate:
+      allOf:
+        - required:
+            - title
+            - body
+            - projectId
+        - $ref: '#/components/schemas/ProjectChild'
+        - $ref: '#/components/schemas/DescriptiveMetadata'
+        - $ref: '#/components/schemas/MutableOwnershipMetadata'
+    IssueUpdate:
+      allOf:
+        - $ref: '#/components/schemas/ProjectChild'
+        - $ref: '#/components/schemas/DescriptiveMetadata'
+        - $ref: '#/components/schemas/MutableOwnershipMetadata'
+    Issue:
+      allOf:
+        - $ref: '#/components/schemas/IdentifyingData'
+        - $ref: '#/components/schemas/MutationTimestamps'
+        - $ref: '#/components/schemas/ProjectChild'
+        - $ref: '#/components/schemas/DescriptiveMetadata'
+        - $ref: '#/components/schemas/OwnershipMetadata'
     # shared properties
     IdentifyingData:
       type: object
@@ -103,17 +183,24 @@ components:
           type: string
         body:
           type: string
-    OwnershipMetadata:
+    MutableOwnershipMetadata:
       type: object
       properties:
         owner:
-          type: string
-        creator:
           type: string
         assignee:
           type: string
         requestor:
           type: string
+    ImmutableOwnershipMetadata:
+      type: object
+      properties:
+        creator:
+          type: string
+    OwnershipMetadata:
+      allOf:
+        - $ref: '#/components/schemas/MutableOwnershipMetadata'
+        - $ref: '#/components/schemas/ImmutableOwnershipMetadata'
     # errors
     Error:
       type: object

@@ -27,11 +27,17 @@ type (
 		Title string `json:"title"`
 		Body  string `json:"body"`
 	}
-	OwnershipMetadata struct {
+	MutableOwnershipMetadata struct {
 		Owner     string `json:"owner"`
-		Creator   string `json:"creator"`
 		Assignee  string `json:"assignee"`
 		Requestor string `json:"requestor"`
+	}
+	ImmutableOwnershipMetadata struct {
+		Creator string `json:"creator"`
+	}
+	OwnershipMetadata struct {
+		ImmutableOwnershipMetadata
+		MutableOwnershipMetadata
 	}
 	Issue struct {
 		IdentifyingData
