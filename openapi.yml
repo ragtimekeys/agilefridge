@@ -117,6 +117,230 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /user:
+    get:
+      summary: Retrieves information about the user
+      parameters:
+        - in: query
+          name: search
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Id'
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        400:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Creates a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+      responses:
+        204:
+          description: The user was created
+        400:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      summary: Updates a user
+      parameters:
+        - $ref: '#/components/parameters/RequiredId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+      responses:
+        204:
+          description: The user was updated
+        400:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Deletes a user
+      parameters:
+        - $ref: '#/components/parameters/RequiredId'
+      responses:
+        204:
+          description: The user was deleted
+        400:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /user/session:
+    post:
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              anyOf:
+                - required:
+                    - githubSessionCode
+                - required:
+                    - email
+                    - password
+                - required:
+                    - appleTokenAuthorizationCode
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - jwt
+                properties:
+                  jwt:
+                    type: string
+        400:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /project:
+    get:
+      summary: Optionally looks for projects that comply with the filters applied
+      parameters:
+        - in: query
+          name: search
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Id'
+        - in: query
+          name: createTime
+          schema:
+            type: string
+        - in: query
+          name: updateTime
+          schema:
+            type: string
+        - in: query
+          name: owner
+          schema:
+            type: string
+        - in: query
+          name: creator
+          schema:
+            type: string
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Project'
+        400:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Creates a project
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectCreate'
+      responses:
+        204:
+          description: The project was created
+        400:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      summary: Updates a project
+      parameters:
+        - $ref: '#/components/parameters/RequiredId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectUpdate'
+      responses:
+        204:
+          description: The project was updated
+        400:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Deletes a project
+      parameters:
+        - in: query
+          name: cascadingDelete
+          required: false
+          schema:
+            type: boolean
+        - $ref: '#/components/parameters/RequiredId'
+      responses:
+        204:
+          description: The project was deleted
+        400:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
   parameters:
     Id:
@@ -159,6 +383,76 @@ components:
         - $ref: '#/components/schemas/ProjectChild'
         - $ref: '#/components/schemas/DescriptiveMetadata'
         - $ref: '#/components/schemas/OwnershipMetadata'
+    UserInCommonDetails:
+      type: object
+      properties:
+        displayName:
+          type: string
+        email:
+          type: string
+    UserGithubDetails:
+      type: object
+      properties:
+        githubId:
+          type: string
+    UserEmailDetails:
+      type: object
+      properties:
+        password:
+          type: string
+    UserAppleDetails:
+      type: object
+      properties:
+        appleTokenAuthorizationCode:
+          type: string
+    UserHasLoggedInWithGithub:
+      type: object
+      required:
+        - hasLoggedInWithGithub
+      properties:
+        hasLoggedInWithGithub:
+          type: boolean
+    UserHasLoggedInWithEmail:
+      type: object
+      required:
+        - hasLoggedInWithEmail
+      properties:
+        hasLoggedInWithEmail:
+          type: boolean
+    UserHasLoggedInWithApple:
+      type: object
+      required:
+        - hasLoggedInWithApple
+      properties:
+        hasLoggedInWithApple:
+          type: boolean
+    UserCreate:
+      allOf:
+        - $ref: '#/components/schemas/UserInCommonDetails'
+        - required:
+            - displayName
+            # this can sometimes be provided by the response given back from the login provider
+            - email
+        # supported login methods
+        - anyOf:
+            - required:
+                - githubId
+            - required:
+                - password
+            - required:
+                - appleId
+    UserUpdate:
+      description: if you delete your last login provider this is not allowed
+      anyOf:
+        - $ref: '#/components/schemas/UserInCommonDetails'
+    User:
+      allOf:
+        - $ref: '#/components/schemas/IdentifyingData'
+        - $ref: '#/components/schemas/MutationTimestamps'
+        - $ref: '#/components/schemas/UserInCommonDetails'
+        - $ref: '#/components/schemas/UserHasLoggedInWithGithub'
+        - $ref: '#/components/schemas/UserHasLoggedInWithEmail'
+        - $ref: '#/components/schemas/UserHasLoggedInWithApple'
     # shared properties
     IdentifyingData:
       type: object
@@ -183,24 +477,47 @@ components:
           type: string
         body:
           type: string
-    MutableOwnershipMetadata:
+    MutableAuthorizationOwnershipMetadata:
       type: object
       properties:
         owner:
           type: string
+    MutableActionableOwnershipMetadata:
+      type: object
+      properties:
         assignee:
           type: string
         requestor:
           type: string
-    ImmutableOwnershipMetadata:
+    ImmutableActionableOwnershipMetadata:
       type: object
       properties:
         creator:
           type: string
+    MutableOwnershipMetadata:
+      allOf:
+        - $ref: '#/components/schemas/MutableAuthorizationOwnershipMetadata'
+        - $ref: '#/components/schemas/MutableActionableOwnershipMetadata'
+        - $ref: '#/components/schemas/ImmutableActionableOwnershipMetadata'
+
     OwnershipMetadata:
       allOf:
         - $ref: '#/components/schemas/MutableOwnershipMetadata'
         - $ref: '#/components/schemas/ImmutableOwnershipMetadata'
+    Project:
+      allOf:
+        - $ref: '#/components/schemas/IdentifyingData'
+        - $ref: '#/components/schemas/MutationTimestamps'
+        - $ref: '#/components/schemas/DescriptiveMetadata'
+        - $ref: '#/components/schemas/MutableOwnershipMetadata'
+        - $ref: '#/components/schemas/ImmutableOwnershipMetadata'
+    ProjectUpdate:
+      allOf:
+        - $ref: '#/components/schemas/DescriptiveMetadata'
+        - $ref: '#/components/schemas/MutableOwnershipMetadata'
+    ProjectCreate:
+      allOf:
+
     # errors
     Error:
       type: object
