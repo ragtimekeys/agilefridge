@@ -237,7 +237,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /project:
+  /projects:
     get:
       summary: Optionally looks for projects that comply with the filters applied
       parameters:
@@ -489,7 +489,7 @@ components:
           type: string
         requestor:
           type: string
-    ImmutableActionableOwnershipMetadata:
+    ImmutableAuthorizationOwnershipData:
       type: object
       properties:
         creator:
@@ -498,25 +498,29 @@ components:
       allOf:
         - $ref: '#/components/schemas/MutableAuthorizationOwnershipMetadata'
         - $ref: '#/components/schemas/MutableActionableOwnershipMetadata'
-        - $ref: '#/components/schemas/ImmutableActionableOwnershipMetadata'
-
+        - $ref: '#/components/schemas/ImmutableAuthorizationOwnershipData'
     OwnershipMetadata:
       allOf:
         - $ref: '#/components/schemas/MutableOwnershipMetadata'
-        - $ref: '#/components/schemas/ImmutableOwnershipMetadata'
+        - $ref: '#/components/schemas/ImmutableAuthorizationOwnershipData'
     Project:
       allOf:
         - $ref: '#/components/schemas/IdentifyingData'
         - $ref: '#/components/schemas/MutationTimestamps'
         - $ref: '#/components/schemas/DescriptiveMetadata'
-        - $ref: '#/components/schemas/MutableOwnershipMetadata'
-        - $ref: '#/components/schemas/ImmutableOwnershipMetadata'
+        - $ref: '#/components/schemas/MutableAuthorizationOwnershipMetadata'
+        - $ref: '#/components/schemas/ImmutableAuthorizationOwnershipData'
     ProjectUpdate:
       allOf:
         - $ref: '#/components/schemas/DescriptiveMetadata'
-        - $ref: '#/components/schemas/MutableOwnershipMetadata'
+        - $ref: '#/components/schemas/MutableAuthorizationOwnershipMetadata'
     ProjectCreate:
       allOf:
+        - required:
+            - title
+            - owner
+        - $ref: '#/components/schemas/DescriptiveMetadata'
+        - $ref: '#/components/schemas/MutableAuthorizationOwnershipMetadata'
 
     # errors
     Error:
