@@ -7,6 +7,7 @@ servers:
 paths:
   /issues:
     delete:
+      operationId: deleteIssue
       parameters:
       - explode: true
         in: query
@@ -32,6 +33,7 @@ paths:
           description: Server error
       summary: Deletes an issue
     get:
+      operationId: listIssues
       parameters:
       - explode: true
         in: query
@@ -126,6 +128,7 @@ paths:
           description: Server error
       summary: Optionally looks for issues that comply with the filters applied
     patch:
+      operationId: updateIssue
       parameters:
       - explode: true
         in: query
@@ -157,6 +160,7 @@ paths:
           description: Server error
       summary: Updates an issue
     post:
+      operationId: createIssue
       requestBody:
         content:
           application/json:
@@ -181,6 +185,7 @@ paths:
       summary: Creates an issue
   /user:
     delete:
+      operationId: deleteUser
       parameters:
       - explode: true
         in: query
@@ -206,6 +211,7 @@ paths:
           description: Server error
       summary: Deletes a user
     get:
+      operationId: retrieveUser
       parameters:
       - explode: true
         in: query
@@ -244,6 +250,7 @@ paths:
           description: Server error
       summary: Retrieves information about the user
     patch:
+      operationId: updateUser
       parameters:
       - explode: true
         in: query
@@ -275,6 +282,7 @@ paths:
           description: Server error
       summary: Updates a user
     post:
+      operationId: createUser
       requestBody:
         content:
           application/json:
@@ -299,18 +307,12 @@ paths:
       summary: Creates a user
   /user/session:
     post:
+      operationId: login
       requestBody:
         content:
           application/json:
             schema:
-              anyOf:
-              - required:
-                - githubSessionCode
-              - required:
-                - email
-                - password
-              - required:
-                - appleTokenAuthorizationCode
+              $ref: '#/components/schemas/UserLoginData'
         required: true
       responses:
         "200":
@@ -334,6 +336,7 @@ paths:
       summary: Login
   /projects:
     delete:
+      operationId: deleteProject
       parameters:
       - explode: true
         in: query
@@ -366,6 +369,7 @@ paths:
           description: Server error
       summary: Deletes a project
     get:
+      operationId: listProjects
       parameters:
       - explode: true
         in: query
@@ -432,6 +436,7 @@ paths:
           description: Server error
       summary: Optionally looks for projects that comply with the filters applied
     patch:
+      operationId: updateProjects
       parameters:
       - explode: true
         in: query
@@ -463,6 +468,7 @@ paths:
           description: Server error
       summary: Updates a project
     post:
+      operationId: createProject
       requestBody:
         content:
           application/json:
@@ -531,9 +537,14 @@ components:
       - $ref: '#/components/schemas/DescriptiveMetadata'
       - $ref: '#/components/schemas/OwnershipMetadata'
     UserInCommonDetails:
+      allOf:
+        - type: object
+          properties:
+            displayName:
+              type: string
+        - $ref: '#/components/schemas/UserInCommonAuthorizationDetails'
+    UserInCommonAuthorizationDetails:
       properties:
-        displayName:
-          type: string
         email:
           type: string
       type: object
@@ -576,6 +587,9 @@ components:
     UserCreate:
       allOf:
       - $ref: '#/components/schemas/UserInCommonDetails'
+      - $ref: '#/components/schemas/UserGithubDetails'
+      - $ref: '#/components/schemas/UserEmailDetails'
+      - $ref: '#/components/schemas/UserAppleDetails'
       - required:
         - displayName
         - email
@@ -589,6 +603,9 @@ components:
     UserUpdate:
       anyOf:
       - $ref: '#/components/schemas/UserInCommonDetails'
+      - $ref: '#/components/schemas/UserGithubDetails'
+      - $ref: '#/components/schemas/UserEmailDetails'
+      - $ref: '#/components/schemas/UserAppleDetails'
       description: if you delete your last login provider this is not allowed
     User:
       allOf:
@@ -598,6 +615,20 @@ components:
       - $ref: '#/components/schemas/UserHasLoggedInWithGithub'
       - $ref: '#/components/schemas/UserHasLoggedInWithEmail'
       - $ref: '#/components/schemas/UserHasLoggedInWithApple'
+    UserLoginData:
+      allOf:
+        - $ref: '#/components/schemas/UserGithubDetails'
+        - $ref: '#/components/schemas/UserEmailDetails'
+        - $ref: '#/components/schemas/UserAppleDetails'
+        - $ref: '#/components/schemas/UserInCommonAuthorizationDetails'
+        - oneOf:
+            - required:
+                - githubSessionCode
+            - required:
+                - email
+                - password
+            - required:
+                - appleTokenAuthorizationCode
     IdentifyingData:
       properties:
         id:

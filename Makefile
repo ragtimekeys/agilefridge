@@ -8,10 +8,10 @@ generate-openapi-server:
 	@./build/openapi-generator generate \
 	  -i ./openapi.yml \
 	  -g go-server \
-	  -o ./.cache/openapi-server-generated
+	  -o ./internal/openapi
 
 clean:
-	@rm -rf ./.cache ./server
+	@rm -rf ./.cache ./server ./internal/openapi
 
 server: build
 	@./server
