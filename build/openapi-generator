@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+mkdir -p ./.cache/openapitools
+curl -S https://raw.githubusercontent.com/OpenAPITools/openapi-generator/master/bin/utils/openapi-generator-cli.sh > ./.cache/openapitools/openapi-generator-cli
+chmod u+x ./.cache/openapitools/openapi-generator-cli
+
+./.cache/openapitools/openapi-generator-cli "$@"
