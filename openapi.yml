@@ -6,6 +6,7 @@ paths:
   /issues:
     get:
       summary: Optionally looks for issues that comply with the filters applied
+      operationId: listIssues
       parameters:
         - in: query
           name: search
@@ -67,6 +68,7 @@ paths:
                 $ref: '#/components/schemas/Error'
     post:
       summary: Creates an issue
+      operationId: createIssue
       requestBody:
         required: true
         content:
@@ -90,6 +92,7 @@ paths:
                 $ref: '#/components/schemas/Error'
     patch:
       summary: Updates an issue
+      operationId: updateIssue
       parameters:
         - $ref: '#/components/parameters/RequiredId'
       requestBody:
@@ -115,6 +118,7 @@ paths:
                 $ref: '#/components/schemas/Error'
     delete:
       summary: Deletes an issue
+      operationId: deleteIssue
       parameters:
         - $ref: '#/components/parameters/RequiredId'
       responses:
@@ -135,6 +139,7 @@ paths:
   /user:
     get:
       summary: Retrieves information about the user
+      operationId: getCurrentUser
       parameters:
         - in: query
           name: search
@@ -164,6 +169,7 @@ paths:
                 $ref: '#/components/schemas/Error'
     post:
       summary: Creates a user
+      operationId: signUp
       requestBody:
         required: true
         content:
@@ -187,6 +193,7 @@ paths:
                 $ref: '#/components/schemas/Error'
     patch:
       summary: Updates a user
+      operationId: updateCurrentUser
       parameters:
         - $ref: '#/components/parameters/RequiredId'
       requestBody:
@@ -212,6 +219,7 @@ paths:
                 $ref: '#/components/schemas/Error'
     delete:
       summary: Deletes a user
+      operationId: deleteUser
       parameters:
         - $ref: '#/components/parameters/RequiredId'
       responses:
@@ -232,19 +240,31 @@ paths:
   /user/session:
     post:
       summary: Login
+      operationId: login
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              anyOf:
-                - required:
-                    - githubSessionCode
-                - required:
-                    - email
-                    - password
-                - required:
-                    - appleTokenAuthorizationCode
+              allOf:
+                - type: object
+                  properties:
+                    githubSessionCode:
+                      type: string
+                    email:
+                      type: string
+                    password:
+                      type: string
+                    appleTokenAuthorizationCode:
+                      type: string
+                - oneOf:
+                    - required:
+                        - githubSessionCode
+                    - required:
+                        - email
+                        - password
+                    - required:
+                        - appleTokenAuthorizationCode
       responses:
         200:
           description: The session was created successfully
@@ -272,6 +292,7 @@ paths:
   /projects:
     get:
       summary: Optionally looks for projects that comply with the filters applied
+      operationId: listProjects
       parameters:
         - in: query
           name: search
@@ -317,6 +338,7 @@ paths:
                 $ref: '#/components/schemas/Error'
     post:
       summary: Creates a project
+      operationId: createProject
       requestBody:
         required: true
         content:
@@ -340,6 +362,7 @@ paths:
                 $ref: '#/components/schemas/Error'
     patch:
       summary: Updates a project
+      operationId: updateProject
       parameters:
         - $ref: '#/components/parameters/RequiredId'
       requestBody:
@@ -365,6 +388,7 @@ paths:
                 $ref: '#/components/schemas/Error'
     delete:
       summary: Deletes a project
+      operationId: deleteProject
       parameters:
         - in: query
           name: cascadingDelete

@@ -1,17 +1,11 @@
 
 all: build
 
-build: generate-openapi-server
+build:
 	@go build ./...
 
-generate-openapi-server:
-	@./build/openapi-generator generate \
-	  -i ./openapi.yml \
-	  -g go-server \
-	  -o ./internal/openapi
-
 clean:
-	@rm -rf ./.cache ./server ./internal/openapi
+	@rm -rf ./.cache ./server
 
 server: build
 	@./server
