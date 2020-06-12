@@ -463,7 +463,7 @@ components:
     UserGithubDetails:
       type: object
       properties:
-        githubId:
+        githubToken:
           type: string
     UserEmailDetails:
       type: object
@@ -475,6 +475,11 @@ components:
       properties:
         appleTokenAuthorizationCode:
           type: string
+    UserLoginData:
+      anyOf:
+        - $ref: '#/components/schemas/UserGithubDetails'
+        - $ref: '#/components/schemas/UserEmailDetails'
+        - $ref: '#/components/schemas/UserAppleDetails'
     UserHasLoggedInWithGithub:
       type: object
       required:
@@ -499,6 +504,7 @@ components:
     UserCreate:
       allOf:
         - $ref: '#/components/schemas/UserInCommonDetails'
+        - $ref: '#/components/schemas/UserLoginData'
         - required:
             - displayName
             # this can sometimes be provided by the response given back from the login provider
@@ -506,11 +512,11 @@ components:
         # supported login methods
         - anyOf:
             - required:
-                - githubId
+                - githubToken
             - required:
                 - password
             - required:
-                - appleId
+                - appleTokenAuthorizationCode
     UserUpdate:
       description: if you delete your last login provider this is not allowed
       anyOf:

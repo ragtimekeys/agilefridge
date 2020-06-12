@@ -1,4 +1,4 @@
-module agilefridge
+module github.com/ragtimekeys/agilefridge
 
 go 1.14
 
